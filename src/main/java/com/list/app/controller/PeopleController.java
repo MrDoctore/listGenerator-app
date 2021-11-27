@@ -1,6 +1,8 @@
 package com.list.app.controller;
 
 import com.list.app.model.People;
+import com.list.app.requests.PeoplePostRequestBody;
+import com.list.app.requests.PeoplePutRequestBody;
 import com.list.app.service.PeopleService;
 import com.list.app.util.Disco;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +30,18 @@ public class PeopleController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<People> findById(@PathVariable Integer id) {
-        return new ResponseEntity<>(peopleService.findById(id), HttpStatus.OK);
+    public ResponseEntity<People> findByIdOrThrowBadRequestException(@PathVariable Integer id) {
+        return new ResponseEntity<>(peopleService.findByIdOrThrowBadRequestException(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<People> save(@PathVariable("id") Integer id, @RequestBody People people) {
-        return new ResponseEntity<>(peopleService.save(id, people), HttpStatus.CREATED);
+    public ResponseEntity<People> save( @RequestBody PeoplePostRequestBody peoplePostRequestBody) {
+        return new ResponseEntity<>(peopleService.save(peoplePostRequestBody), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<People> update(@RequestBody People people) {
-
-        return new ResponseEntity<>(peopleService.update(people), HttpStatus.OK);
+    public ResponseEntity<People> update(@RequestBody PeoplePutRequestBody peoplePutRequestBody) {
+        return new ResponseEntity<>(peopleService.update(peoplePutRequestBody), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{idp}")

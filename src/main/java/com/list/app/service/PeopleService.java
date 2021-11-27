@@ -5,6 +5,8 @@ import com.list.app.model.Event;
 import com.list.app.model.People;
 import com.list.app.repository.EventRepository;
 import com.list.app.repository.PeopleRepository;
+import com.list.app.requests.PeoplePostRequestBody;
+import com.list.app.requests.PeoplePutRequestBody;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -33,23 +35,33 @@ public class PeopleService {
         return (List<People>) peopleRepository.findByEvent(event);
     }
 
-    public People findById(Integer id) {
+    public People findByIdOrThrowBadRequestException(Integer id) {
         return peopleRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Person not found"));
     }
 
-    public People save(Integer id, People people) {
-        Event event = eventRepository.findById(id).get();
+    public People save(PeoplePostRequestBody peoplePostRequestBody) {
+        Event event = eventRepository.findById(peoplePostRequestBody.getEvent().getId()).get();
+        People people = new People();
         people.setEvent(event);
+        people.setName(peoplePostRequestBody.getName());
+        people.setEmail(peoplePostRequestBody.getEmail());
+        people.setClassroom(peoplePostRequestBody.getClassroom());
         return peopleRepository.save(people);
     }
 
-    public People update(People people) {
+    public People update(PeoplePutRequestBody peoplePutRequestBody) {
+        findByIdOrThrowBadRequestException(peoplePutRequestBody.getId());
+        People people = new People();
+        people.setEvent(peoplePutRequestBody.getEvent());
+        people.setName(peoplePutRequestBody.getName());
+        people.setEmail(peoplePutRequestBody.getEmail());
+        people.setClassroom(peoplePutRequestBody.getClassroom());
         return peopleRepository.save(people);
     }
 
     public void delete(Integer id) {
-        peopleRepository.deleteById(id);
+        peopleRepository.delete(findByIdOrThrowBadRequestException(id));
     }
 
     public void importFile(Integer id, String filePath) {

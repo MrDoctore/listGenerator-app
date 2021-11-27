@@ -1,37 +1,18 @@
-package com.list.app.model;
+package com.list.app.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.list.app.model.Event;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.io.Serializable;
-import java.util.Objects;
 
-@Entity
-public class People implements Serializable {
+public class PeoplePutRequestBody {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotEmpty(message = "The person name cannot be empty")
     private String name;
     private String email;
     private String classroom;
-
-    @ManyToOne
-    @JoinColumn(name = "event_id")
     private Event event;
-
-    public People() {
-    }
-
-    public People(Integer id, String name, String email, String classroom, Event event) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.classroom = classroom;
-        this.event = event;
-    }
 
     public Integer getId() {
         return id;
@@ -71,18 +52,5 @@ public class People implements Serializable {
 
     public void setEvent(Event event) {
         this.event = event;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        People people = (People) o;
-        return id.equals(people.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }
